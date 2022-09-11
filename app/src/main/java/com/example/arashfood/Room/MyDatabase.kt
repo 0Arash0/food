@@ -1,6 +1,8 @@
 package com.example.arashfood.Room
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.arashfood.Food
 
@@ -13,6 +15,17 @@ abstract class MyDatabase: RoomDatabase() {
 
         private var database:MyDatabase?=null
 
-    }
+    fun getDatabase(context: Context):MyDatabase {
+        if (database==null)
+        {
+          database=Room.databaseBuilder(
+              context.applicationContext,MyDatabase::class.java,
+              "Fooddata"
+          )   .allowMainThreadQueries()
+              .build()
+        }
+        return database!!
 
+       }
+    }
 }

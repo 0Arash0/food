@@ -7,15 +7,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.arashfood.Room.FoodDao
+import com.example.arashfood.Room.MyDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_new_item.view.*
 import kotlinx.android.synthetic.main.item_food.*
-import java.util.ArrayList
 
 
 class MainActivity : AppCompatActivity()  {
 
      lateinit var foodlists : ArrayList<Food>
+     lateinit var foodDao: FoodDao
+     lateinit var myAdopter:FoodAdopter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +36,12 @@ class MainActivity : AppCompatActivity()  {
 
         )*/
 
-      val myAdopter = FoodAdopter(foodlists,this)
+        val foodDao=MyDatabase.getDatabase(this).foodDao
 
 
-      res.adapter = myAdopter
-      res.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
-
+        myAdopter = FoodAdopter(foodlists,this)
+        res.adapter = myAdopter
+        res.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
 
         addfood.setOnClickListener {
 
@@ -56,7 +59,6 @@ class MainActivity : AppCompatActivity()  {
                     return@setOnClickListener
                 }
 
-
               /*  myAdopter.Addfood(
                     Food(view.outlinedTextField.edt.text.toString(),
                         view.outlinedTextField2.edt2.text.toString(),
@@ -66,8 +68,18 @@ class MainActivity : AppCompatActivity()  {
                         0f,
                         view.outlinedTextField5.edt5.text.toString(),
                     ))*/
+
                 show.dismiss()
             }
         }
+    }
+
+    private fun showAlldata(){
+        val foodData=foodDao.getAllFood()
+
+        myAdopter = FoodAdopter(ArrayList(foodData),this)
+        res.adapter = myAdopter
+        res.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+
     }
 }
